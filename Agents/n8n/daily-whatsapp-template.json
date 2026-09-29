@@ -1,0 +1,69 @@
+{
+  "name": "Daily WhatsApp Business message",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "a7588f3c-a2ec-4f9f-9c78-2e0dfb455401",
+      "name": "Every day at 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v23.0/REPLACE_WITH_PHONE_NUMBER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": \"REPLACE_WITH_RECIPIENT_NUMBER\", \"type\": \"template\", \"template\": { \"name\": \"REPLACE_WITH_APPROVED_TEMPLATE_NAME\", \"language\": { \"code\": \"en_US\" } } } }}",
+        "options": {}
+      },
+      "id": "f3264618-dde7-4ac8-911a-89562d981e3b",
+      "name": "Send WhatsApp template",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every day at 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Kolkata"
+  },
+  "versionId": "d1772e74-299e-468b-bb45-8a278ee0e2cb",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "pinData": {},
+  "tags": []
+}
