@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt  # type: ignore
 
-balls = [10, 20, 30, 40, 50]
+balls = [10, 20, 30, 40, 60]
 runs = [20, 30, 45, 65, 77]
 
 plt.plot(balls, runs)
