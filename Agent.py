@@ -43,7 +43,7 @@ write_task = Task(
 
 crew = Crew(
     agents=[researcher, writer],
-    tasks=[researcher, writer],
+    tasks=[research_task, write_task],
     process=Process.sequential,
 )
 
