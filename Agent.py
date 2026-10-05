@@ -13,29 +13,30 @@ if not api_key:
     )
 
 llm = LLM(model="gemini-3.5-flash-lite", api_key=api_key)
+topic = input("Enter the topic you want to research: ")
 
 researcher = Agent(
-    role="Research Analyst",
-    goal="Find key facts about India",
-    backstory="You are a careful analyst.",
+    role="Senior Research Analyst",
+    goal=f"Find latest key News about ({topic})",
+    backstory="You are an expert analyst.",
     llm=llm,
 )
 
 writer = Agent(
-    role="Content Writer",
-    goal="Turn research into a clear, short summary",
+    role="Expert Content Writer",
+    goal=f"Turn research into a clear, short summary about ({topic})",
     backstory="You write simple, readable summaries.",
     llm=llm,
 )
 
 research_task = Task(
-    description="Research the topic: India. List the 5 most important points.",
+    description=f"Research the topic: {topic}. List the 5 most important points.",
     expected_output="A bullet list of 5 key points.",
     agent=researcher,
 )
 
 write_task = Task(
-    description="Write a 150-word summary using the research.",
+    description=f"Write a 150-word summary using the research on {topic}.",
     expected_output="A 150-word summary.",
     agent=writer,
     context=[research_task],
@@ -47,5 +48,5 @@ crew = Crew(
     process=Process.sequential,
 )
 
-result = crew.kickoff(inputs={"topic": "India"})
+result = crew.kickoff(inputs={"topic": topic})
 print(result)
