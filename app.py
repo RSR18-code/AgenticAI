@@ -93,7 +93,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown('<p class="eyebrow">CrewAI · Research assistant</p>', unsafe_allow_html=True)
+st.markdown('<p class="eyebrow">RSR AI Solutions · Research assistant</p>', unsafe_allow_html=True)
 st.title("Turn a topic into a clear briefing.")
 st.markdown(
     '<p class="intro">Enter a subject and the research team will gather current '

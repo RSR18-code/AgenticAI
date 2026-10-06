@@ -30,8 +30,8 @@ def run_research(topic: str) -> str:
 
     writer = Agent(
         role="Expert Content Writer",
-        goal=f"Turn research into a clear, short summary about {normalized_topic}",
-        backstory="You write simple, readable summaries.",
+        goal=f"Turn research into a clear, actionable summary about {normalized_topic}",
+        backstory="You write actionable, readable summaries.",
         llm=llm,
     )
 
@@ -46,7 +46,7 @@ def run_research(topic: str) -> str:
 
     write_task = Task(
         description=(
-            f"Write a 150-word summary using the research on {normalized_topic}."
+            f"Write a 300-word summary using the research on {normalized_topic}."
         ),
         expected_output="A concise summary highlighting key points and pros and cons.",
         agent=writer,
