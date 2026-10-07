@@ -5,7 +5,7 @@ from pathlib import Path
 import streamlit as st
 from dotenv import load_dotenv
 
-from email_output import send_result_email
+from email_output import is_valid_email_address, send_result_email
 from research import run_research
 
 load_dotenv(dotenv_path=Path(__file__).with_name(".env"), override=False)
@@ -113,11 +113,20 @@ with st.form("research_form"):
         help="Use a specific topic for more focused research.",
     )
     email_result = st.checkbox(
-        "Email the results to my configured recipient",
+        "Email the results",
         disabled=not email_ready,
         help=(
             "Configure GMAIL_ADDRESS, GMAIL_APP_PASSWORD, and EMAIL_RECIPIENT "
             "in your local .env file to enable email."
+        ),
+    )
+    additional_recipient = st.text_input(
+        "Also send to another email address (optional)",
+        placeholder="name@example.com",
+        disabled=not email_ready,
+        help=(
+            "When email is selected, the configured recipient will still receive "
+            "a copy. This adds one more recipient."
         ),
     )
     submitted = st.form_submit_button(
@@ -135,6 +144,12 @@ if submitted:
     normalized_topic = topic.strip()
     if not normalized_topic:
         st.error("Enter a topic before generating research.")
+    elif (
+        email_result
+        and additional_recipient.strip()
+        and not is_valid_email_address(additional_recipient)
+    ):
+        st.error("Enter a valid additional email address.")
     else:
         with st.spinner("Researching and preparing your briefing…"):
             result = run_research(normalized_topic)
@@ -143,14 +158,23 @@ if submitted:
 
         if email_result:
             try:
-                sent = send_result_email(normalized_topic, result)
+                sent = send_result_email(
+                    normalized_topic,
+                    result,
+                    additional_recipient=additional_recipient,
+                )
             except (OSError, RuntimeError, smtplib.SMTPException) as exc:
                 st.error(f"Research is ready, but email delivery failed: {exc}")
             else:
                 if sent:
-                    st.success(
-                        f"Results emailed to {os.environ['EMAIL_RECIPIENT']}."
-                    )
+                    recipients = [os.environ["EMAIL_RECIPIENT"]]
+                    if (
+                        additional_recipient.strip()
+                        and additional_recipient.casefold()
+                        != os.environ["EMAIL_RECIPIENT"].casefold()
+                    ):
+                        recipients.append(additional_recipient.strip())
+                    st.success(f"Results emailed to: {', '.join(recipients)}.")
                 else:
                     st.warning("Email is not configured, so no email was sent.")
 
